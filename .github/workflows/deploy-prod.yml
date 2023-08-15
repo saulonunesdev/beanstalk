@@ -1,0 +1,57 @@
+name: Deploy To Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production-server:
+    runs-on: ubuntu-latest
+    name: Deploy Production Server
+    environment: Dev
+    steps:
+      - name: Checkout Local
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Install zip
+        uses: montudor/action-zip@v1
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Set Node.js
+        uses: actions/setup-node@v3.5.1
+        with:
+          node-version: "16.14.2"
+          registry-url: https://npm.pkg.github.com
+        env:
+          RUNNER_TEMP: "/tmp/"
+
+      - name: Cache Node Modules
+        uses: actions/cache@v3.2.2
+        id: cache-node-modules
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('./package-lock.json') }}
+
+      - name: Install Node Modules
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --omit=dev
+
+      - name: Zipping App
+        run: zip -r ${{ steps.package-version.outputs.current-version}}-production.zip package.json package-lock.json node_modules
+        working-directory: packages/ghost/
+
+      - name: Uploading Zip Into S3 Bucket
+        run: |
+          aws s3 cp ${{ steps.package-version.outputs.current-version}}-production.zip s3://${{ env.AWS_S3_CONFIG_BUCKET }}/${{ env.AWS_BEANSTALK_APP_NAME }}/${{ steps.package-version.outputs.current-version}}-production.zip
