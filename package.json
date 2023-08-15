@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "server": "pm2 start index.js -n test"
   },
   "keywords": [],
   "author": "",
