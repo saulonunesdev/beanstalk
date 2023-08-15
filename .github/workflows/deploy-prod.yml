@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
@@ -53,4 +53,4 @@ jobs:
 
       - name: Uploading Zip Into S3 Bucket
         run: |
-          aws s3 cp ${{ steps.package-version.outputs.current-version}}-production.zip s3://${{ env.AWS_S3_CONFIG_BUCKET }}/${{ env.AWS_BEANSTALK_APP_NAME }}/${{ steps.package-version.outputs.current-version}}-production.zip
+          aws s3 cp ${{ steps.package-version.outputs.current-version}}-production.zip s3://${{ vars.AWS_S3_CONFIG_BUCKET }}/${{ vars.AWS_BEANSTALK_APP_NAME }}/${{ steps.package-version.outputs.current-version}}-production.zip
