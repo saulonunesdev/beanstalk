@@ -9,7 +9,7 @@ jobs:
   deploy-production-server:
     runs-on: ubuntu-latest
     name: Deploy Production Server
-    environment: Dev
+    environment: prod
     steps:
       - name: Checkout Local
         uses: actions/checkout@v3
