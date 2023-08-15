@@ -50,7 +50,6 @@ jobs:
 
       - name: Zipping App
         run: zip -r ${{ steps.package-version.outputs.current-version}}-production.zip package.json package-lock.json node_modules
-        working-directory: packages/ghost/
 
       - name: Uploading Zip Into S3 Bucket
         run: |
