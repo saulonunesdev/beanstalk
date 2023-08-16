@@ -1,18 +1,22 @@
-require("dotenv").config();
-const fastify = require("fastify")({
-  logger: true,
-});
+require('dotenv').config()
+const fastify = require('fastify')({
+  logger: true
+})
 
-fastify.get("/", function (request, reply) {
-  reply.send({ hello: "world" });
-});
+fastify.get('/', function (request, reply) {
+  reply.send({ hello: 'world' })
+})
 
-const port = process.env.SERVER_PORT || 3000;
-const serverHost = process.env.SERVER_HOST || "0.0.0.0";
+fastify.get('/health', function (request, reply) {
+  reply.send({ status: 'ok' })
+})
+
+const port = process.env.SERVER_PORT || 3000
+const serverHost = process.env.SERVER_HOST || '0.0.0.0'
 
 fastify.listen({ port, host: serverHost }, function (err, address) {
   if (err) {
-    fastify.log.error(err);
-    process.exit(1);
+    fastify.log.error(err)
+    process.exit(1)
   }
-});
+})
