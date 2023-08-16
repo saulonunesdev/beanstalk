@@ -48,8 +48,11 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Install Node Modules
+        run: npm shrinkwrap
+
       - name: Zipping App
-        run: zip -r ${{ steps.package-version.outputs.current-version}}-production.zip package.json package-lock.json .ebextensions .platform Procfile index.js
+        run: zip -r ${{ steps.package-version.outputs.current-version}}-production.zip package.json npm-shrinkwrap.json Procfile index.js
 
       - name: Uploading Zip Into S3 Bucket
         run: |
