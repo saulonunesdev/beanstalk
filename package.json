@@ -1,11 +1,11 @@
 {
   "name": "beanstalk",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
-    "start": "./node_modules/pm2/bin/pm2-runtime app.js",
+    "start": "./node_modules/pm2/bin/pm2-runtime index.js -n test",
     "poststart": "node ./node_modules/pm2/bin/pm2 logs"
   },
   "keywords": [],
